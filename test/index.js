@@ -1,19 +1,204 @@
 // Load modules
 
 var Lab = require('lab'),
+    Todos = require('../'),
+    TodosPersist = require('../lib/persistence/todos'),
+    Nock = require('nock'),
 
-  // Declare internals
-  internals = {},
+    // Declare internals
+    internals = {},
 
-  // Test aliases
-  expect = Lab.expect,
-  before = Lab.before,
-  beforeEach = Lab.beforeEach,
-  after = Lab.after,
-  afterEach = Lab.afterEach,
-  describe = Lab.experiment,
-  it = Lab.test,
-  assert = Lab.assert;
+    // Configs
+    orchestrateUrl = 'https://api.orchestrate.io:443',
+    baseUri = '/v0/todos',
+
+    // Test aliases
+    expect = Lab.expect,
+    before = Lab.before,
+    beforeEach = Lab.beforeEach,
+    after = Lab.after,
+    afterEach = Lab.afterEach,
+    describe = Lab.experiment,
+    it = Lab.test,
+    assert = Lab.assert;
 
 describe('todos-lib', function () {
+    describe('get', function(){
+        it('returns an object with a title, status and id if passed a single id', function(done){
+            var todo = new Todos();
+
+            Nock(orchestrateUrl)
+                .get(baseUri + '/123')
+                .replyWithFile(200, __dirname + '/fixtures/todo.json');
+
+            todo.get({ id: '123' }, function(err, todo){
+                expect(todo).to.have.property('title');
+                expect(todo).to.have.property('status');
+                expect(todo).to.have.property('id');
+                done();
+            });
+        });
+
+        it('returns null if passed a single id that doesn\'t exist', function(done){
+            var todo = new Todos();
+
+            Nock(orchestrateUrl)
+                .get(baseUri + '/123')
+                .reply(404);
+
+            todo.get({ id: '123' }, function(err, todo){
+                expect(todo).to.be.a('null');
+                done();
+            });
+        });
+
+        it('returns error if an error occurs', function(done){
+            var todo = new Todos();
+
+            Nock(orchestrateUrl)
+                .get(baseUri + '/123')
+                .reply(500, new Error());
+
+            todo.get({ id: '123' }, function(err, todo){
+                expect(err).to.exist;
+                done();
+            });
+        });
+
+        it('returns an array where all objects have a title, status and id if no id is passed', function(done){
+            var todo = new Todos();
+
+            Nock(orchestrateUrl)
+                .get(baseUri)
+                .replyWithFile(200, __dirname + '/fixtures/list.json');
+
+            todo.get(null, function(err, todos){
+
+                expect(todos).to.be.instanceof(Array);
+
+                todos.forEach(function(todo){
+                    expect(todo).to.have.property('title');
+                    expect(todo).to.have.property('status');
+                    expect(todo).to.have.property('id');
+                });
+
+                done();
+            });
+        });
+
+        it('returns error if an error occurs', function(done){
+            var todo = new Todos();
+
+            Nock(orchestrateUrl)
+                .get(baseUri)
+                .reply(500, new Error());
+
+            todo.get(null, function(err, todo){
+                expect(err).to.exist;
+                done();
+            });
+        });
+
+
+    });
+
+    describe('create', function(){
+
+        it('returns error if an error occurs', function(done){
+            var todo = new Todos();
+
+            Nock(orchestrateUrl)
+                .filteringPath(function(path) {
+                    return baseUri + '/123';
+                })
+                .put(baseUri + '/123')
+                .reply(500);
+
+            todo.create({ id: '123' }, function(err, id){
+                expect(err).to.exist;
+                done();
+            });
+        });
+
+        it('returns the id of the new object', function(done){
+            var todo = new Todos();
+
+            TodosPersist.prototype.createKey = function(){
+                return '123';
+            };
+
+            Nock(orchestrateUrl)
+                .put(baseUri + '/123')
+                .reply(200);
+
+            todo.create({ title: 'test' }, function(err, id){
+                expect(id).to.equal('123');
+                done();
+            });
+        });
+    });
+
+    describe('update', function(){
+
+        it('returns error if an error occurs', function(done){
+            var todo = new Todos();
+
+            Nock(orchestrateUrl)
+                .filteringPath(function(path) {
+                    return baseUri + '/123';
+                })
+                .put(baseUri + '/123')
+                .reply(500);
+
+            todo.update({ id: '123', model: { title: 'test' } }, function(err, id){
+                expect(err).to.exist;
+                done();
+            });
+        });
+
+        it('returns the id of the new object', function(done){
+            var todo = new Todos();
+
+            Nock(orchestrateUrl)
+                .put(baseUri + '/123')
+                .reply(200, {});
+
+            todo.update({ id: '123', model: { title: 'test' } }, function(err, id){
+                expect(id).to.equal('123');
+                done();
+            });
+        });
+    });
+
+    describe('destroy', function(){
+
+        it('returns error if an error occurs', function(done){
+            var todo = new Todos();
+
+            Nock(orchestrateUrl)
+                .filteringPath(function(path) {
+                    return baseUri + '/123';
+                })
+                .delete(baseUri + '/123')
+                .reply(500);
+
+            todo.destroy({ id: '123' }, function(err, response){
+                expect(err).to.exist;
+                done();
+            });
+        });
+
+        it('returns the id of the new object', function(done){
+            var todo = new Todos();
+
+            Nock(orchestrateUrl)
+                .delete(baseUri + '/123')
+                .reply(200, {});
+
+            todo.destroy({ id: '123' }, function(err, response){
+                expect(response).to.be.a('null');
+                done();
+            });
+        });
+    });
 });

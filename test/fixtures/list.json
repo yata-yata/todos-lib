@@ -1,0 +1,27 @@
+{
+    "count": 2,
+    "results": [
+        {
+            "path": {
+                "collection": "todos",
+                "key": "1a2f5ae0-d3d6-11e3-b7c0-c511e0d70011",
+                "ref": "6c8cbf94220d9774"
+            },
+            "value": {
+                "title": "Boo",
+                "status": "not started"
+            }
+        },
+        {
+            "path": {
+                "collection": "todos",
+                "key": "a5b97990-d3c9-11e3-82a2-f78f0b26b3a8",
+                "ref": "ee76f30827dbd4ca"
+            },
+            "value": {
+                "title": "Test",
+                "status": "not started"
+            }
+        }
+    ]
+}
