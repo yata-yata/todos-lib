@@ -1,0 +1,19 @@
+{
+    "count": 1,
+    "results": [
+        {
+            "path": {
+                "collection": "users",
+                "key": "123",
+                "ref": "2dd7e25f89878ceb"
+            },
+            "value": {
+                "first": "Paul",
+                "last": "Newman",
+                "email": "paul.newman@gmail.com",
+                "displayName": "Paul Newman",
+                "provider": "google"
+            }
+        }
+    ]
+}
