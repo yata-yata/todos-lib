@@ -4,7 +4,7 @@
   "description": "Todos Persistence Library",
   "main": "index",
   "scripts": {
-    "test": "node ./node_modules/lab/bin/lab -v -c -t 95"
+    "test": "orchestrateKey=key node ./node_modules/lab/bin/lab -v -c -t 95"
   },
   "license": "MIT",
   "dependencies": {
