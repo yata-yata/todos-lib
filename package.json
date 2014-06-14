@@ -6,7 +6,7 @@
   "scripts": {
     "test": "node ./node_modules/lab/bin/lab -v -c -t 95"
   },
-  "license": "MIT",
+  "license": "Artistic-2.0",
   "dependencies": {
     "orchestrate": ">=0.1.2",
     "node-uuid": ">=1.4.1",
