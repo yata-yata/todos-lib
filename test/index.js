@@ -263,7 +263,7 @@ describe('todos-lib', function () {
             });
         });
 
-        it('returns the id of the new object', function(done){
+        it('returns the id of the object', function(done){
             var todo = new Todos();
 
             Nock(orchestrateUrl)
@@ -328,7 +328,7 @@ describe('todos-lib', function () {
             });
         });
 
-        it('returns the id of the new object', function(done){
+        it('returns a null response', function(done){
             var todo = new Todos();
 
             Nock(orchestrateUrl)
