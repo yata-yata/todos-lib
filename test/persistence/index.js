@@ -20,7 +20,6 @@ describe('persistence todos', function () {
     describe('#createKey', function(){
         it('returns a random id', function(done){
             var todo = new TodosPersist();
-            debugger;
 
             expect(todo.createKey()).to.not.equal(todo.createKey());
 
